@@ -15,7 +15,6 @@ let transporter = nodemailer.createTransport({
 // Message object
 const message = {
   from: 'info@cameronb.me',
-  to: 'cbutler2018@gmail.com',
   subject: 'Lightspeed Beta Information ✔',
   text: 'Hello!\nThank you for signing up for the Lightspeed beta! Information on the selection process and how to access your account if selected will be provided soon!\n\nRegards,\nCameron',
 };
