@@ -1,0 +1,13 @@
+{
+  "name": "Lightspeed-API",
+  "version": "0.0.1",
+  "description": "api for lightspeed services",
+  "main": "app.js",
+  "author": "Cameron",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "express": "^4.16.2",
+    "nodemailer": "^4.3.0"
+  }
+}
