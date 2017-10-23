@@ -6,6 +6,9 @@
   "author": "Cameron",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
   "dependencies": {
     "express": "^4.16.2",
     "nodemailer": "^4.3.0"
