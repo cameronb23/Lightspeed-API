@@ -34,7 +34,7 @@ app.post('/emailInfo', (req, res) => {
     }
   
     console.log('Message sent: %s', info.messageId);
-    res.status(200);
+    res.status(200).send('Message sent');
   });
 });
 
