@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 
 // Create a SMTP transporter object
@@ -12,33 +13,42 @@ let transporter = nodemailer.createTransport({
   }
 });
 
-// Message object
-const message = {
-  from: 'Lightspeed Info <info@cameronb.me>',
-  subject: 'Lightspeed Beta Information ✔',
-  text: 'Hello!\n' +
-        'Thank you for signing up for the Lightspeed beta! ' +
-        'Information on the selection process and how to access your account ' +
-        'if selected will be provided soon!\n\nRegards,\nCameron',
-};
+app.use(bodyParser.json());
 
 app.post('/emailInfo', (req, res) => {
-  const email = req.query.target;
-  
-  if(email === null) {
-    return res.status(500);
-  }
+  try  {
+    const jsonBody = req.body;
 
-  message.to = email;
-
-  transporter.sendMail(message, (err, info) => {
-    if (err) {
-        console.log('Error occurred. ' + err.message);
+    if(jsonBody.target === null) {
+      return res.status(500).send('Invalid email');
     }
-  
-    console.log('Message sent: %s', info.messageId);
-    res.status(200).send('Message sent');
-  });
+
+    if(jsonBody.subject === null) {
+      return res.status(500).send('Invalid subject');
+    }
+
+    if(jsonBody.message === null) {
+      return res.status(500).send('Invalid message');
+    }
+
+    const message = {
+      from: 'Lightspeed Development <info@cameronb.me>',
+      to: jsonBody.target,
+      subject: jsonBody.subject,
+      text: jsonBody.message
+    }
+
+    transporter.sendMail(message, (err, info) => {
+      if (err) {
+          console.log('Error occurred. ' + err.message);
+      }
+
+      console.log('Message sent: %s', info.messageId);
+      res.status(200).send('Message sent');
+    });
+  } catch (e) {
+    return res.status(500).send('Invalid body');
+  }
 });
 
 app.listen(process.env.PORT || 3000, function () {
