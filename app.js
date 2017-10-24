@@ -2,21 +2,18 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
+const mailgunApi = require('mailgun-js');
 
 app.use(bodyParser.json());
 
-// Create a SMTP transporter object
-let transporter = nodemailer.createTransport({
-  host: 'smtp.zoho.com',
-  port: 587,
-  auth: {
-      user: 'info@cameronb.me',
-      pass: 'gj2EthN4bX2B'
-  }
-});
+
+const BASE_URL = process.env.MAILGUN_URL;
+const API_KEY = process.env.MAILGUN_API_KEY;
+
+const mailgun = mailgunApi({apiKey: API_KEY, domain: BASE_URL});
 
 app.post('/sendUpdate', (req, res) => {
-  try  {
+  try {
     const jsonBody = req.body;
 
     console.log(JSON.stringify(jsonBody));
@@ -40,13 +37,13 @@ app.post('/sendUpdate', (req, res) => {
       text: jsonBody.message
     }
 
-    transporter.sendMail(message, (err, info) => {
-      if (err) {
-        console.log('Error occurred. ' + err.message);
+    mailgun.messages().send(message, function (error, body) {
+      if (error) {
+        console.log('Error occurred. ' + error.message);
         return res.status(500).send('Error sending message');
       }
 
-      console.log('Message sent: %s', info.messageId);
+      console.log('Message sent: %s', body);
       res.status(200).send('Message sent');
     });
   } catch (e) {
