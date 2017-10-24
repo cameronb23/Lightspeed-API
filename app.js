@@ -2,15 +2,13 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
-const mailgunApi = require('mailgun-js');
-
-app.use(bodyParser.json());
-
 
 const BASE_URL = process.env.MAILGUN_URL;
 const API_KEY = process.env.MAILGUN_API_KEY;
 
-const mailgun = mailgunApi({apiKey: API_KEY, domain: BASE_URL});
+const mailgun = require('mailgun-js')({apiKey: API_KEY, domain: BASE_URL});
+
+app.use(bodyParser.json());
 
 app.post('/sendUpdate', (req, res) => {
   try {
@@ -43,6 +41,7 @@ app.post('/sendUpdate', (req, res) => {
         return res.status(500).send('Error sending message');
       }
 
+      console.log(body);
       console.log('Message sent: %s', body);
       res.status(200).send('Message sent');
     });
