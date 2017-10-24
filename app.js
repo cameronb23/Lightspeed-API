@@ -3,6 +3,8 @@ const app = express();
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 
+app.use(bodyParser.json());
+
 // Create a SMTP transporter object
 let transporter = nodemailer.createTransport({
   host: 'smtp.zoho.com',
@@ -13,9 +15,7 @@ let transporter = nodemailer.createTransport({
   }
 });
 
-app.use(bodyParser.json());
-
-app.post('/emailInfo', (req, res) => {
+app.post('/sendUpdate', (req, res) => {
   try  {
     const jsonBody = req.body;
 
@@ -40,7 +40,8 @@ app.post('/emailInfo', (req, res) => {
 
     transporter.sendMail(message, (err, info) => {
       if (err) {
-          console.log('Error occurred. ' + err.message);
+        console.log('Error occurred. ' + err.message);
+        return res.status(500).send('Error sending message');
       }
 
       console.log('Message sent: %s', info.messageId);
