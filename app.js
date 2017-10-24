@@ -19,6 +19,8 @@ app.post('/sendUpdate', (req, res) => {
   try  {
     const jsonBody = req.body;
 
+    console.log(JSON.stringify(jsonBody));
+
     if(jsonBody.target === null) {
       return res.status(500).send('Invalid email');
     }
