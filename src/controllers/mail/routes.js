@@ -1,9 +1,4 @@
-const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
-const nodemailer = require('nodemailer');
-
-const AUTH_KEY = process.env.API_AUTH_KEY;
+const AUTH_KEY = 'abc';
 
 const SUBSCRIPTION_LIST_NAME = process.env.EMAIL_LIST_KEY;
 
@@ -13,8 +8,6 @@ const API_KEY = process.env.MAILGUN_API_KEY;
 const mailgun = require('mailgun-js')({apiKey: API_KEY, domain: BASE_URL});
 
 const list = mailgun.lists(SUBSCRIPTION_LIST_NAME);
-
-app.use(bodyParser.json());
 
 app.post('/sendUpdate', (req, res) => {
   try {
@@ -101,6 +94,4 @@ app.post('/unsubscribe', (req, res) => {
   });
 });
 
-app.listen(process.env.PORT || 3000, function () {
-  console.log('Example app listening on port 3000!')
-})
+export default router;
