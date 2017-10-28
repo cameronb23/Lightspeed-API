@@ -52,18 +52,20 @@ router.post('/register', (req, res) => {
 
   for(let keyIndex in requiredKeys) {
     const key = requiredKeys[keyIndex];
-    console.log('checking ' + key);
     if(!formKeys.includes(key) ||
         req.body[key] === '' ||
         req.body[key] === null) {
-      return res.status(400).send('Invalid request');
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid request.'
+      });
     }
   }
 
   if(req.body.access_key !== 'cameron_123') {
     return res.status(400).json({
       success: false,
-      message: 'Incorrect password'
+      message: 'Incorrect access key'
     });
   }
 
