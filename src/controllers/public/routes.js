@@ -46,7 +46,7 @@ router.post('/authenticate', function(req, res) {
 
 router.post('/register', (req, res) => {
 
-  const requiredKeys = ['first_name', 'last_name', 'email', 'password', 'accessKey'];
+  const requiredKeys = ['first_name', 'last_name', 'email', 'password', 'access_key'];
 
   const formKeys = _.keys(req.body);
 
@@ -58,6 +58,10 @@ router.post('/register', (req, res) => {
         req.body[key] === null) {
       return res.status(400).send('Invalid request');
     }
+  }
+
+  if(req.body.access_key !== 'cameron_123') {
+    return res.status(400).send('Invalid access key.');
   }
 
   // TODO: plaintext???? wtf is this 1992
