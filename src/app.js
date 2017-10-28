@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 import mongoose from 'mongoose';
 
@@ -16,6 +17,7 @@ import userRoutes from './controllers/users/routes';
 const AUTH_KEY = process.env.API_AUTH_KEY || 'gang';
 
 app.use(bodyParser.json());
+app.use(cors())
 
 app.use('/', publicRoutes);
 //app.use('/', mailRoutes);
