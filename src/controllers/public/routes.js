@@ -61,7 +61,10 @@ router.post('/register', (req, res) => {
   }
 
   if(req.body.access_key !== 'cameron_123') {
-    return res.status(400).send('Invalid access key.');
+    return res.status(400).json({
+      success: false,
+      message: 'Incorrect password'
+    });
   }
 
   // TODO: plaintext???? wtf is this 1992
@@ -79,7 +82,7 @@ router.post('/register', (req, res) => {
     if (err) throw err;
 
     console.log('User saved successfully');
-    res.json({ success: true });
+    return res.json({ success: true, message: 'Successfully registered.' });
   });
 
 });
