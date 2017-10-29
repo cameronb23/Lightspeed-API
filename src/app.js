@@ -7,15 +7,17 @@ const cors = require('cors');
 import publicRoutes from './controllers/public/routes';
 import authRoutes from './controllers/auth/routes';
 import userRoutes from './controllers/users/routes';
+import productRoutes from './controllers/products/routes';
 
 const AUTH_KEY = process.env.API_AUTH_KEY || 'gang';
 
 app.use(bodyParser.json());
-app.use(cors())
+app.use(cors());
 
 app.use('/', publicRoutes);
 //app.use('/', mailRoutes);
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
+app.use('/products', productRoutes);
 
 export default app;

@@ -20,18 +20,16 @@ export async function verifyToken(token) {
 
 export async function authenticate(req, res, next) {
   // check header or url parameters or post parameters for token
-  const token = req.body.token ||
-                req.query.token ||
-                req.headers['x-access-token'];
+  const token = req.headers['x-access-token'];
 
-  if (token) {
+  if (token != null) {
     try {
       const decoded = await verifyToken(token);
 
       req.decoded = decoded;
-      next();
+      return next();
     } catch (e) {
-      return res.status(403).json({
+      return res.status(401).json({
         success: false,
         message: 'Failed to authenticate'
       });
@@ -40,7 +38,7 @@ export async function authenticate(req, res, next) {
 
   // if there is no token
   // return an error
-  return res.status(403).json({
+  return res.status(401).json({
       success: false,
       message: 'Access denied'
   });

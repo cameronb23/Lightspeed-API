@@ -3,15 +3,21 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const model = mongoose.model('Product', new Schema({
-  title: String,
-  description: String,
-  price_cents: Number,
-  price_currency: String,
-  digital_download: {
-    resources: [{
-      url: String,
-      key: String
-    }]
+  title: {
+    type: String,
+    required: true
+  },
+  description: {
+    type: String,
+    default: ''
+  },
+  price_cents: {
+    type: Number,
+    required: true
+  },
+  price_currency: {
+    type: String,
+    required: true
   },
 }));
 

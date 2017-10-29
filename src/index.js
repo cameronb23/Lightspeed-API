@@ -4,7 +4,7 @@ import app from './app';
 mongoose.connect('mongodb://admin:lightspeed@ds237735.mlab.com:37735/lightspeed', { useMongoClient: true });
 mongoose.Promise = global.Promise;
 
-const { PORT = 8080 } = process.env;
+const { PORT = 3000 } = process.env;
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
