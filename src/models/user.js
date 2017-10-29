@@ -1,4 +1,3 @@
-// get an instance of mongoose and mongoose.Schema
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
@@ -8,7 +7,10 @@ const model = mongoose.model('User', new Schema({
   last_name: String,
   email: String,
   password: String,
-  admin: Boolean
+  admin: {
+    type: Boolean,
+    default: false
+  }
 }));
 
 export default model;

@@ -3,12 +3,6 @@ const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-import mongoose from 'mongoose';
-
-mongoose.connect('mongodb://admin:lightspeed@ds237735.mlab.com:37735/lightspeed', { useMongoClient: true });
-mongoose.Promise = global.Promise;
-
-
 //const mailRoutes = require('./controllers/mail/routes');
 import publicRoutes from './controllers/public/routes';
 import authRoutes from './controllers/auth/routes';
