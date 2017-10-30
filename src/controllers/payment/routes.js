@@ -23,12 +23,13 @@ router.post('/create', (req, res) => {
   }, function(err, charge) {
     // asynchronously called
     if (err) {
-      console.log(err);
       return res.status(500).send({
         success: false,
         message: 'Error charging card.'
       });
     }
+
+    // TODO: log charge to database
 
     return res.status(200).send({
       success: true,
