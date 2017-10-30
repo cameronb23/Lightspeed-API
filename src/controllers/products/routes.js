@@ -136,13 +136,17 @@ router.delete('/', async (req, res) => {
   }
 
   try {
-    await Product.remove({_id: { $in: req.body }}).exec();
+
+    console.log(req.body);
+
+    await Product.remove({_id: { $in: req.body.ids }}).exec();
 
     return res.status(200).send({
       success: true,
       message: 'Successfully removed products'
     });
   } catch (e) {
+    console.log(e);
     return res.status(500).send({
       success: false,
       message: 'Unable to remove products. Try again later.',
