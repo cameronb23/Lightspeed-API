@@ -22,7 +22,6 @@ router.post('/create', (req, res) => {
     source: req.body.stripeToken,
   }, function(err, charge) {
     // asynchronously called
-    console.log(charge);
     if (err) {
       console.log(err);
       return res.status(500).send({
