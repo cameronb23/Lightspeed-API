@@ -26,6 +26,35 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/:productId', async (req, res) => {
+  if(!req.decoded.admin) {
+    return res.status(400).send({
+      success: false,
+      message: 'Insufficient permissions',
+    });
+  }
+
+  if (!req.params.productId) {
+    return res.status(400).send({
+      success: false,
+      message: 'Invalid request'
+    });
+  }
+
+  try {
+    const product = await Product.findOne({_id: req.params.productId}).exec();
+
+    console.log(product);
+
+    return res.status(200).send(product);
+  } catch (e) {
+    return res.status(404).send({
+      success: false,
+      message: 'Product not found',
+    });
+  }
+});
+
 router.post('/', async (req, res) => {
   if(!req.decoded.admin) {
     return res.status(400).send({
@@ -56,6 +85,67 @@ router.post('/', async (req, res) => {
     return res.status(500).send({
       success: false,
       message: 'Failed to save product. Try again later.'
+    });
+  }
+});
+
+router.put('/:productId', async (req, res) => {
+  if(!req.decoded.admin) {
+    return res.status(400).send({
+      success: false,
+      message: 'Insufficient permissions',
+    });
+  }
+
+  if (!req.params.productId) {
+    return res.status(400).send({
+      success: false,
+      message: 'Invalid request'
+    });
+  }
+
+  try {
+    const product = await Product.findOne({_id: req.params.productId}).exec();
+
+    product.set(req.body);
+
+    await product.save();
+
+    return res.status(200).send(product);
+  } catch (e) {
+    return res.status(500).send({
+      success: false,
+      message: 'Unable to save product. Try again later.',
+    });
+  }
+});
+
+router.delete('/:productId', async (req, res) => {
+  if(!req.decoded.admin) {
+    return res.status(400).send({
+      success: false,
+      message: 'Insufficient permissions',
+    });
+  }
+
+  if (!req.params.productId) {
+    return res.status(400).send({
+      success: false,
+      message: 'Invalid request'
+    });
+  }
+
+  try {
+    await Product.remove({_id: req.params.productId}).exec();
+
+    return res.status(200).send({
+      success: true,
+      message: 'Successfully removed product'
+    });
+  } catch (e) {
+    return res.status(500).send({
+      success: false,
+      message: 'Unable to remove product. Try again later.',
     });
   }
 });
