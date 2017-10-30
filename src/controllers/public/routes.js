@@ -38,7 +38,10 @@ router.post('/authenticate', function(req, res) {
     res.json({
       success: true,
       message: 'Authentication successful',
-      token: token
+      credentials: {
+        admin: user.admin,
+        token
+      }
     });
 
   });
