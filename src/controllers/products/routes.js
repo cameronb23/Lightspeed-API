@@ -120,6 +120,36 @@ router.put('/:productId', async (req, res) => {
   }
 });
 
+router.delete('/', async (req, res) => {
+  if(!req.decoded.admin) {
+    return res.status(400).send({
+      success: false,
+      message: 'Insufficient permissions',
+    });
+  }
+
+  if (!req.body || !req.body.length < 1) {
+    return res.status(400).send({
+      success: false,
+      message: 'Invalid request'
+    });
+  }
+
+  try {
+    await Product.remove({_id: { $in: req.body }}).exec();
+
+    return res.status(200).send({
+      success: true,
+      message: 'Successfully removed products'
+    });
+  } catch (e) {
+    return res.status(500).send({
+      success: false,
+      message: 'Unable to remove products. Try again later.',
+    });
+  }
+});
+
 router.delete('/:productId', async (req, res) => {
   if(!req.decoded.admin) {
     return res.status(400).send({
