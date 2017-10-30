@@ -24,6 +24,7 @@ router.post('/create', (req, res) => {
     // asynchronously called
     console.log(charge);
     if (err) {
+      console.log(err);
       return res.status(500).send({
         success: false,
         message: 'Error charging card.'
@@ -35,4 +36,6 @@ router.post('/create', (req, res) => {
       message: 'Payment success'
     });
   });
-})
+});
+
+export default router;
