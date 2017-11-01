@@ -111,7 +111,10 @@ router.put('/:productId', async (req, res) => {
 
     await product.save();
 
-    return res.status(200).send(product);
+    return res.status(200).send({
+      success: true,
+      message: 'Successfully saved product details'
+    });
   } catch (e) {
     return res.status(500).send({
       success: false,
