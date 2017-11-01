@@ -7,6 +7,10 @@ const model = mongoose.model('Product', new Schema({
     type: String,
     required: true
   },
+  media: {
+    type: [String],
+    required: false
+  },
   description: {
     type: String,
     default: ''

@@ -26,6 +26,13 @@ router.post('/create', async (req, res) => {
     });
   }
 
+  if(!product.active) {
+    return res.status(500).send({
+      success: false,
+      message: 'Product not available for purchase'
+    });
+  }
+
   stripe.charges.create({
     amount: product.price_cents,
     currency: "usd",
