@@ -1,31 +1,42 @@
 import express from 'express';
 
-import stripeSetup from 'stripe';
+import stripePackage from 'stripe';
+
+import Product from '../../models/product';
 
 const router = express.Router();
-const stripe = stripeSetup('sk_test_0MNTf884MCmC930BkoQQ3rBI');
+const stripe = stripePackage('sk_test_0MNTf884MCmC930BkoQQ3rBI');
 
 
 
-router.post('/create', (req, res) => {
-  if (!req.body.stripeToken) {
+router.post('/create', async (req, res) => {
+  if (!req.body.stripeToken || !req.body.productId) {
     return res.status(400).send({
       success: false,
       message: 'Invalid payload'
     });
   }
 
+  const product = await Product.findOne({_id: req.body.productId}).exec();
+
+  if(product === null) {
+    return res.status(404).send({
+      success: false,
+      message: 'Invalid pid'
+    });
+  }
+
   stripe.charges.create({
-    amount: 1000,
+    amount: product.price_cents,
     currency: "usd",
-    description: "Test charge",
+    description: product.title,
     source: req.body.stripeToken,
   }, function(err, charge) {
     // asynchronously called
     if (err) {
       return res.status(500).send({
         success: false,
-        message: 'Error charging card.'
+        message: 'Error creating payment.'
       });
     }
 

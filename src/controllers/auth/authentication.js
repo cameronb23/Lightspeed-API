@@ -5,7 +5,7 @@ const jwt = promisify(jwebtoken);
 
 export async function getToken(user) {
   return jwt.sign({ userId: user._id, admin: user.admin }, 'abc', {
-    expiresIn: 1440
+    expiresIn: "7d"
   });
 }
 
