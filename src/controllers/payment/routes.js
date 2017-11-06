@@ -5,7 +5,9 @@ import stripePackage from 'stripe';
 import Product from '../../models/product';
 
 const router = express.Router();
-const stripe = stripePackage('sk_test_0MNTf884MCmC930BkoQQ3rBI');
+
+const { STRIPE_KEY } = process.env;
+const stripe = stripePackage(STRIPE_KEY);
 
 
 

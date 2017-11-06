@@ -2,6 +2,7 @@ import express from 'express';
 import _ from 'underscore';
 import User from '../../models/user';
 import { getToken } from '../auth/authentication';
+import { redisClient } from '../../app';
 
 const router = express.Router();
 
@@ -47,7 +48,27 @@ router.post('/authenticate', function(req, res) {
   });
 });
 
-router.post('/register', (req, res) => {
+
+function validateKey(keyUnparsed) {
+  const key = parseInt(keyUnparsed, 10);
+
+  return new Promise((resolve, reject) => {
+    redisClient.get(key, (err, reply) => {
+      if (err) {
+        console.log(err);
+        return reject();
+      }
+
+      if(reply) {
+        return resolve();
+      }
+
+      return reject();
+    });
+  })
+}
+
+router.post('/register', async (req, res) => {
 
   const requiredKeys = ['first_name', 'last_name', 'email', 'password', 'access_key'];
 
@@ -65,7 +86,11 @@ router.post('/register', (req, res) => {
     }
   }
 
-  if(req.body.access_key !== 'cameron_123') {
+  const key = req.body.access_key;
+
+  try {
+    await validateKey(key);
+  } catch (e) {
     return res.status(400).json({
       success: false,
       message: 'Incorrect access key'

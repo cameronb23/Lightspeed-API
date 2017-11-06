@@ -1,7 +1,9 @@
 import mongoose from 'mongoose';
 import app from './app';
 
-mongoose.connect('mongodb://admin:lightspeed@ds237735.mlab.com:37735/lightspeed', { useMongoClient: true });
+const { MONGO_URL } = process.env;
+
+mongoose.connect(MONGO_URL, { useMongoClient: true });
 mongoose.Promise = global.Promise;
 
 const { PORT = 3000 } = process.env;
