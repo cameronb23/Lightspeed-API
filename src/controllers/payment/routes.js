@@ -2,14 +2,17 @@ import express from 'express';
 
 import stripePackage from 'stripe';
 
+import { createKey } from '../activation/manage';
+import { authenticate } from '../auth/authentication';
 import Product from '../../models/product';
+import User from '../../models/user';
 
 const router = express.Router();
 
 const { STRIPE_KEY } = process.env;
 const stripe = stripePackage(STRIPE_KEY);
 
-
+router.use(authenticate);
 
 router.post('/create', async (req, res) => {
   if (!req.body.stripeToken || !req.body.productId) {
@@ -40,7 +43,7 @@ router.post('/create', async (req, res) => {
     currency: "usd",
     description: product.title,
     source: req.body.stripeToken,
-  }, function(err, charge) {
+  }, async (err, charge) => {
     // asynchronously called
     if (err) {
       return res.status(500).send({
@@ -50,6 +53,19 @@ router.post('/create', async (req, res) => {
     }
 
     // TODO: log charge to database
+    const user = await User.findOne({_id: req.decoded.userId}).exec();
+
+    const key = await createKey();
+
+    if(key != null) {
+      user.licenses.push({
+        productName: product.title,
+        productId: product._id,
+        licenseKey: key
+      });
+  
+      await user.save();
+    }
 
     return res.status(200).send({
       success: true,

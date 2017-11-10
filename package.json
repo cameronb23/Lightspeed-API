@@ -29,6 +29,7 @@
     "promisify-node": "^0.4.0",
     "pug": "^2.0.0-beta11",
     "redis": "^2.8.0",
+    "request-promise": "^4.2.2",
     "rimraf": "^2.6.1",
     "stripe": "^5.2.0",
     "underscore": "^1.8.3"

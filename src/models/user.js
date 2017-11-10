@@ -10,7 +10,14 @@ const model = mongoose.model('User', new Schema({
   admin: {
     type: Boolean,
     default: false
-  }
+  },
+  licenses: [
+    {
+      productName: String,
+      productId: String,
+      licenseKey: String
+    }
+  ]
 }));
 
 export default model;
