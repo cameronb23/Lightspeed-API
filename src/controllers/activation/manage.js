@@ -22,7 +22,7 @@ function generateKeyString(len, bits) {
         outStr += newStr.slice(0, Math.min(newStr.length, (len - outStr.length)));
     }
 
-    outStr = outStr.toUpperCase().replace(/(.{4})/g,"$1-").toUpperCase().substring(0, str.length - 1);
+    outStr = outStr.toUpperCase().replace(/(.{4})/g,"$1-").toUpperCase().substring(0, outStr.length - 1);
     return outStr;
 }
 
@@ -76,7 +76,7 @@ export async function createKey() {
 
   try {
     await request(opts);
-    
+
     const res = await createLicense(key);
 
     if(res) {
@@ -118,7 +118,7 @@ async function createLicense(key) {
 
   try {
     await request(opts);
-    
+
     return true;
   } catch (e) {
     console.log(e);
