@@ -10,6 +10,9 @@ import User from '../../models/user';
 const router = express.Router();
 
 const { STRIPE_KEY } = process.env;
+
+console.log('Starting stripe with key: ' + STRIPE_KEY);
+
 const stripe = stripePackage(STRIPE_KEY);
 
 router.use(authenticate);
@@ -63,7 +66,7 @@ router.post('/create', async (req, res) => {
         productId: product._id,
         licenseKey: key
       });
-  
+
       await user.save();
     }
 
