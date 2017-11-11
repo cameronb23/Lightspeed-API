@@ -18,7 +18,7 @@ router.post('/validate', async (req, res) => {
     const { productName, licenseKey } = req.body;
 
     if(productName == null || licenseKey == null) {
-      res.status(403).send({
+      return res.status(403).send({
         success: false,
         message: 'Failed to authenticate'
       });
