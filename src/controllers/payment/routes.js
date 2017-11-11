@@ -61,18 +61,23 @@ router.post('/create', async (req, res) => {
 
       const key = await createKey();
 
-      if(key != null) {
-        user.licenses.push({
-          productName: product.title,
-          productId: product._id,
-          licenseKey: key
+      if(key == null) {
+        return res.status(200).send({
+          success: true,
+          message: 'Payment success. Unable to automatically create your license.'
         });
-
-        console.log(key);
-        console.log(user);
-
-        await user.save();
       }
+
+      user.licenses.push({
+        productName: product.title,
+        productId: product._id,
+        licenseKey: key
+      });
+
+      console.log(key);
+      console.log(user);
+
+      await user.save();
 
       return res.status(200).send({
         success: true,
