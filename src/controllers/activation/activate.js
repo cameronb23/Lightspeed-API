@@ -81,9 +81,10 @@ router.post('/activate', async (req, res) => {
       message: 'Failed to validate license'
     });
   } catch (e) {
+    console.log(e);
     return res.status(500).send({
       success: false,
-      message: 'Unable to fetch products. Try again later.',
+      message: 'Unable to get credential details. Try again later.',
     });
   }
 });
