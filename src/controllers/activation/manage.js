@@ -22,7 +22,7 @@ function generateKeyString(len, bits) {
       outStr += newStr.slice(0, Math.min(newStr.length, (len - outStr.length)));
   }
 
-  outStr = outStr.toUpperCase().replace(/(.{4})/g,"$1-").toUpperCase().substring(0, outStr.length - 1);
+  outStr = outStr.toUpperCase().replace(/(.{4})/g,"$1-").substring(0, outStr.length);
   return outStr;
 }
 
@@ -52,8 +52,9 @@ export async function createKey() {
     if (errors.length > 0) {
       if (errors[0].detail === 'has already been taken') {
         return createKey();
+      } else if (errors[0].title === 'Not found') {
+        // we good
       }
-      return null;
     }
   } catch (e) {
     console.log(e);
