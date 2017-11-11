@@ -13,6 +13,56 @@ const KEYGEN_REQUEST_HEADERS = {
 
 const router = express.Router();
 
+router.post('/validate', async (req, res) => {
+  try {
+    const { productName, licenseKey } = req.body;
+
+    if(productName == null || licenseKey == null) {
+      res.status(403).send({
+        success: false,
+        message: 'Failed to authenticate'
+      });
+    }
+
+    const validationOpts = {
+      url: `${KEYGEN_REQUEST_BASEURL}/licenses/actions/validate-key`,
+      method: 'POST',
+      json: true,
+      body: {
+        meta: {
+          key: licenseKey
+        }
+      }
+    };
+
+    const { meta, errors } = await request(validationOpts);
+
+    if (errors) {
+      return res.status(403).send({
+        success: false,
+        message: 'Invalid key'
+      });
+    }
+
+    if (meta.constant === 'VALID') {
+      return res.status(200).send({
+        success: true
+      });
+    }
+
+    return res.status(401).send({
+      success: false,
+      message: 'Failed to validate license'
+    });
+  } catch (e) {
+    console.log(e.error);
+    return res.status(500).send({
+      success: false,
+      message: 'Unable to get credential details. Try again later.',
+    });
+  }
+});
+
 router.post('/activate', async (req, res) => {
   try {
     const { email, password, productName, licenseKey } = req.body;
