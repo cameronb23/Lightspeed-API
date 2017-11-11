@@ -55,7 +55,6 @@ router.post('/validate', async (req, res) => {
       message: 'Failed to validate license'
     });
   } catch (e) {
-    console.log(e.error);
     return res.status(500).send({
       success: false,
       message: 'Unable to get credential details. Try again later.',
