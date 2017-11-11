@@ -15,9 +15,18 @@ const router = express.Router();
 
 router.post('/activate', async (req, res) => {
   try {
+    const { email, password, productName, licenseKey } = req.body;
+
+    if(email == null || password == null || productName == null || licenseKey == null) {
+      res.status(403).send({
+        success: false,
+        message: 'Failed to authenticate'
+      });
+    }
+
     const user = await User.findOne({_id: req.decoded.userId}).exec();
-    
-    const prodSet = user.licenses.filter(l => l.productName === 'Lightspeed');
+
+    const prodSet = user.licenses.filter(l => l.productName === productName);
 
     if(prodSet.length === 0) {
       return res.status(404).send({
@@ -44,7 +53,7 @@ router.post('/activate', async (req, res) => {
       json: true,
       body: {
         meta: {
-          key: prod.licenseKey
+          key: licenseKey
         }
       }
     };
@@ -52,13 +61,18 @@ router.post('/activate', async (req, res) => {
     const { meta, data, errors } = await request(validationOpts);
 
     if (errors) {
-      return
+      return res.status(403).send({
+        success: false,
+        message: 'Invalid key'
+      });
     }
 
     if (meta.constant === 'VALID') {
       return res.status(200).send({
         success: true,
-        id: data.id
+        id: data.id,
+        token: data.attributes.key,
+        expiry: data.attributes.expiry
       });
     }
 

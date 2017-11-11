@@ -29,7 +29,6 @@ function generateKeyString(len, bits) {
 export async function createKey() {
   console.log('Creating new credentials.');
   const key = generateKeyString(24);
-  console.log('Generated key: ' + key);
 
   const validationOpts = {
     url: `${KEYGEN_REQUEST_BASEURL}/licenses/actions/validate-key`,
@@ -46,7 +45,6 @@ export async function createKey() {
 
   try {
     const res = await request(validationOpts);
-    console.log(JSON.stringify(res.body));
     const { errors } = res.body;
 
     if (errors.length > 0) {
@@ -88,7 +86,6 @@ export async function createKey() {
 
   try {
     const r = await request(opts);
-    console.log(JSON.stringify(r));
 
     const res = await createLicense(key);
 
@@ -131,8 +128,6 @@ async function createLicense(key) {
 
   try {
     const res = await request(opts);
-
-    console.log(res);
 
     return true;
   } catch (e) {

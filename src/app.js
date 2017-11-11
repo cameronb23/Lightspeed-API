@@ -11,6 +11,7 @@ import userRoutes from './controllers/users/routes';
 import productRoutes from './controllers/products/routes';
 import paymentRoutes from './controllers/payment/routes';
 import keyRoutes from './controllers/keys';
+import activationRoutes from './controllers/activation/activate';
 
 const AUTH_KEY = process.env.API_AUTH_KEY || 'gang';
 
@@ -18,6 +19,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use('/', publicRoutes);
+app.use('/activation', activationRoutes);
 //app.use('/', mailRoutes);
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
