@@ -24,7 +24,21 @@ router.post('/activate', async (req, res) => {
       });
     }
 
-    const user = await User.findOne({_id: req.decoded.userId}).exec();
+    const user = await User.findOne({email: email}).exec();
+
+    if (user === null) {
+      return res.status(403).send({
+        success: false,
+        message: 'No user found'
+      });
+    }
+
+    if (user.password !== password) {
+      return res.status(403).send({
+        success: false,
+        message: 'Authenticated failed'
+      });
+    }
 
     const prodSet = user.licenses.filter(l => l.productName === productName);
 
