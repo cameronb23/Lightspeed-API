@@ -4,7 +4,7 @@ import { authenticate } from '../auth/authentication';
 
 const KEYGEN_ACCOUNT_ID = '23924206-776c-4b65-8809-d582882f8e9e';
 
-const KEYGEN_VALIDATION_TOKEN = process.env.VALIDATION_TOKEN || '23924206776c4b658809d582882f8e9e.ec0dc93a288e4bf6bb66fd5a501f8bb5.0a1771b7f6e29eb27fe78dcff4748e8461781a9bec9b3dbced69e3bfb3caa29d7074e31af7304d4ee366a5136c8c3a8faecd6cf409203f48965337797e97ddv1';
+const KEYGEN_VALIDATION_TOKEN = process.env.VALIDATION_TOKEN;
 
 const KEYGEN_REQUEST_BASEURL = `https://api.keygen.sh/v1/accounts/${KEYGEN_ACCOUNT_ID}`;
 const KEYGEN_REQUEST_HEADERS = {
@@ -82,7 +82,8 @@ export async function createKey() {
   };
 
   try {
-    await request(opts);
+    const r = await request(opts);
+    console.log(JSON.stringify(r));
 
     const res = await createLicense(key);
 
@@ -124,7 +125,9 @@ async function createLicense(key) {
   };
 
   try {
-    await request(opts);
+    const res = await request(opts);
+
+    console.log(res);
 
     return true;
   } catch (e) {
