@@ -27,6 +27,7 @@ function generateKeyString(len, bits) {
 }
 
 export async function createKey() {
+  console.log('Creating new credentials.');
   const key = generateKeyString();
 
   const validationOpts = {

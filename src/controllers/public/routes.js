@@ -12,15 +12,15 @@ router.post('/authenticate', function(req, res) {
     email: req.body.email
   }, async (err, user) => {
     if (err) {
-      res.send(500).json({
+      console.log(err);
+      return res.send(500).json({
         success: false,
         message: 'Internal error'
       });
-      return console.log(err);
     }
 
     if (!user) {
-      res.json({
+      return res.json({
         success: false,
         message: 'User not found'
       });
