@@ -67,6 +67,9 @@ router.post('/create', async (req, res) => {
         licenseKey: key
       });
 
+      console.log(key);
+      console.log(user);
+
       await user.save();
     }
 
