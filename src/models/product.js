@@ -26,6 +26,10 @@ const model = mongoose.model('Product', new Schema({
   active: {
     type: Boolean,
     default: true
+  },
+  licensable: {
+    type: Boolean,
+    default: false
   }
 }));
 

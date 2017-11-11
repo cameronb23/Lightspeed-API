@@ -55,28 +55,35 @@ router.post('/create', async (req, res) => {
       });
     }
 
-    // TODO: log charge to database
-    const user = await User.findOne({_id: req.decoded.userId}).exec();
+    if (product.licensable) {
+      // TODO: log charge to database
+      const user = await User.findOne({_id: req.decoded.userId}).exec();
 
-    const key = await createKey();
+      const key = await createKey();
 
-    if(key != null) {
-      user.licenses.push({
-        productName: product.title,
-        productId: product._id,
-        licenseKey: key
+      if(key != null) {
+        user.licenses.push({
+          productName: product.title,
+          productId: product._id,
+          licenseKey: key
+        });
+
+        console.log(key);
+        console.log(user);
+
+        await user.save();
+      }
+
+      return res.status(200).send({
+        success: true,
+        message: 'Payment success'
       });
-
-      console.log(key);
-      console.log(user);
-
-      await user.save();
+    } else {
+      return res.status(200).send({
+        success: true,
+        message: 'Payment success'
+      });
     }
-
-    return res.status(200).send({
-      success: true,
-      message: 'Payment success'
-    });
   });
 });
 
