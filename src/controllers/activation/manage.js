@@ -37,16 +37,23 @@ export async function createKey() {
       meta: {
         key: key
       }
-    }
+    },
+    simple: false,
+    resolveWithFullResponse: true
   };
 
-  const { errors } = await request(validationOpts);
+  try {
+    const res = await request(validationOpts);
+    const { errors } = res.body;
 
-  if (errors) {
-    if (errors[0].detail === 'has already been taken') {
-      return createKey();
+    if (errors) {
+      if (errors[0].detail === 'has already been taken') {
+        return createKey();
+      }
+      return null;
     }
-    return null;
+  } catch (e) {
+    console.log(e);
   }
 
   const opts = {
