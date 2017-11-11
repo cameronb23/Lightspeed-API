@@ -14,21 +14,21 @@ const KEYGEN_REQUEST_HEADERS = {
 const POLICY_ID = '22e45b06-4d49-4b12-8f50-b37102232671';
 
 function generateKeyString(len, bits) {
-    bits = bits || 36;
-    var outStr = '', newStr;
-    while (outStr.length < len)
-    {
-        newStr = Math.random().toString(bits).slice(2);
-        outStr += newStr.slice(0, Math.min(newStr.length, (len - outStr.length)));
-    }
+  bits = bits || 36;
+  var outStr = '', newStr;
+  while (outStr.length < len)
+  {
+      newStr = Math.random().toString(bits).slice(2);
+      outStr += newStr.slice(0, Math.min(newStr.length, (len - outStr.length)));
+  }
 
-    outStr = outStr.toUpperCase().replace(/(.{4})/g,"$1-").toUpperCase().substring(0, outStr.length - 1);
-    return outStr;
+  outStr = outStr.toUpperCase().replace(/(.{4})/g,"$1-").toUpperCase().substring(0, outStr.length - 1);
+  return outStr;
 }
 
 export async function createKey() {
   console.log('Creating new credentials.');
-  const key = generateKeyString();
+  const key = generateKeyString(24);
   console.log('Generated key: ' + key);
 
   const validationOpts = {
