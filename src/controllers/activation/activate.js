@@ -60,10 +60,7 @@ router.post('/activate', async (req, res) => {
 
     const validationOpts = {
       url: `${KEYGEN_REQUEST_BASEURL}/licenses/actions/validate-key`,
-      method: 'GET',
-      headers: Object.assign({}, KEYGEN_REQUEST_HEADERS, {
-        Authorization: `Bearer ${KEYGEN_VALIDATION_TOKEN}`
-      }),
+      method: 'POST',
       json: true,
       body: {
         meta: {
@@ -95,7 +92,7 @@ router.post('/activate', async (req, res) => {
       message: 'Failed to validate license'
     });
   } catch (e) {
-    console.log(e);
+    console.log(e.error);
     return res.status(500).send({
       success: false,
       message: 'Unable to get credential details. Try again later.',
