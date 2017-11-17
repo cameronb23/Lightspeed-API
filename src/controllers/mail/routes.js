@@ -1,4 +1,6 @@
-const AUTH_KEY = 'abc';
+import express from 'express';
+
+const AUTH_KEY = process.env.MAIL_API_KEY;
 
 const SUBSCRIPTION_LIST_NAME = process.env.EMAIL_LIST_KEY;
 
@@ -9,7 +11,9 @@ const mailgun = require('mailgun-js')({apiKey: API_KEY, domain: BASE_URL});
 
 const list = mailgun.lists(SUBSCRIPTION_LIST_NAME);
 
-app.post('/sendUpdate', (req, res) => {
+const router = express.Router();
+
+router.post('/sendUpdate', (req, res) => {
   try {
     const headers = req.headers;
     if(!headers['X-API-Key'] || headers['X-API-Key'] !== AUTH_KEY) {
@@ -54,7 +58,7 @@ app.post('/sendUpdate', (req, res) => {
   }
 });
 
-app.post('/subscribe', (req, res) => {
+router.post('/subscribe', (req, res) => {
 
   const jsonBody = req.body;
 
@@ -79,7 +83,7 @@ app.post('/subscribe', (req, res) => {
   });
 });
 
-app.post('/unsubscribe', (req, res) => {
+router.post('/unsubscribe', (req, res) => {
   if(req.body.email === null) {
     return res.status(400).send('Invalid request');
   }

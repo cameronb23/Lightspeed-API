@@ -1,7 +1,23 @@
 const promisify = require('promisify-node');
 const jwebtoken = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const jwt = promisify(jwebtoken);
 
+export async function verifyPassword(password, user) {
+  const hash = user.password;
+
+  try {
+    const verified = await bcrypt.compare(password, hash);
+
+    if (!verified) {
+      return false;
+    }
+
+    return true;
+  } catch (e) {
+    return false
+  }
+}
 
 export async function getToken(user) {
   return jwt.sign({ userId: user._id, admin: user.admin }, 'abc', {

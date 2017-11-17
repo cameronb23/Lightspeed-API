@@ -1,5 +1,7 @@
 import express from 'express';
 import request from 'request-promise';
+
+import { verifyPassword } from '../auth/authentication';
 import User from '../../models/user';
 
 const KEYGEN_ACCOUNT_ID = '23924206-776c-4b65-8809-d582882f8e9e';
@@ -82,7 +84,9 @@ router.post('/activate', async (req, res) => {
       });
     }
 
-    if (user.password !== password) {
+    const verified = await verifyPassword(password, user);
+
+    if (!verified) {
       return res.status(403).send({
         success: false,
         message: 'Authenticated failed'
