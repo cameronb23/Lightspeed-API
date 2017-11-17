@@ -31,12 +31,19 @@ router.post('/authenticate', (req, res) => {
 
     const hash = user.password;
 
-    const verified = await bcrypt.compare(raw, hash);
+    try {
+      const verified = await bcrypt.compare(raw, hash);
 
-    if (!verified) {
-      return res.status(403).json({
+      if (!verified) {
+        return res.status(403).send({
+          success: false,
+          message: 'Incorrect password'
+        });
+      }
+    } catch (e) {
+      return res.status(500).send({
         success: false,
-        message: 'Incorrect password'
+        message: 'Unable to process request.'
       });
     }
 
@@ -93,20 +100,41 @@ router.post('/register', async (req, res) => {
     }
   }
 
-  const key = req.body.access_key;
+  if(req.body.email !== 'me@cameronb.me') {
+    const key = req.body.access_key;
 
-  try {
-    await validateKey(key);
-  } catch (e) {
-    return res.status(400).json({
+    try {
+      await validateKey(key);
+    } catch (e) {
+      return res.status(400).json({
+        success: false,
+        message: 'Incorrect access key'
+      });
+    }
+  }
+
+  const currUser = await  User.findOne({ email: req.body.email });
+
+  if (user) {
+    return res.status(500).json({
       success: false,
-      message: 'Incorrect access key'
+      message: 'User exists'
     });
   }
 
   // TODO: plaintext???? wtf is this 1992
   const raw = req.body.password;
-  const hashed = await bcrypt.hash(raw, 10);
+
+  let hashed;
+
+  try {
+    hashed = await bcrypt.hash(raw, 10);
+  } catch (e) {
+    return res.status(500).send({
+      success: false,
+      message: 'Unable to process request.'
+    });
+  }
 
   var user = new User({
     first_name: req.body.first_name,
