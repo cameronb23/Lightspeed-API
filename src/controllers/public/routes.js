@@ -84,9 +84,9 @@ function validateKey(keyUnparsed) {
           console.log('used key');
           return resolve('Key found and used successfully');
         });
+      } else {
+        return reject('No key found');
       }
-
-      return reject('No key found');
     });
   })
 }
