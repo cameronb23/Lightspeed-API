@@ -74,7 +74,14 @@ function validateKey(keyUnparsed) {
       }
 
       if(reply) {
-        return resolve();
+        redisClient.del(key, err => {
+          if (err) {
+            console.log(err);
+            return reject();
+          }
+
+          return resolve();
+        });
       }
 
       return reject();
