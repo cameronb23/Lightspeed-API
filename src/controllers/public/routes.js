@@ -70,21 +70,21 @@ function validateKey(keyUnparsed) {
     redisClient.get(key, (err, reply) => {
       if (err) {
         console.log(err);
-        return reject();
+        return reject(err);
       }
 
       if(reply) {
         redisClient.del(key, err => {
           if (err) {
             console.log(err);
-            return reject();
+            return reject(err);
           }
 
-          return resolve();
+          return resolve('Key found and used successfully');
         });
       }
 
-      return reject();
+      return reject('No key found');
     });
   })
 }
@@ -111,8 +111,10 @@ router.post('/register', async (req, res) => {
     const key = req.body.access_key;
 
     try {
-      await validateKey(key);
+      const res = await validateKey(key);
+      console.log(res);
     } catch (e) {
+      console.log(e);
       return res.status(400).json({
         success: false,
         message: 'Incorrect access key'
@@ -122,7 +124,7 @@ router.post('/register', async (req, res) => {
 
   const currUser = await  User.findOne({ email: req.body.email });
 
-  if (user) {
+  if (currUser) {
     return res.status(500).json({
       success: false,
       message: 'User exists'
