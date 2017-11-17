@@ -17,6 +17,7 @@
     "babel-cli": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.4.0",
+    "bcrypt": "^1.0.3",
     "body-parser": "^1.17.1",
     "cors": "^2.8.4",
     "express": "^4.15.2",

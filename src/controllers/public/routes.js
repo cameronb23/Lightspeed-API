@@ -1,4 +1,5 @@
 import express from 'express';
+import bcrypt from 'bcrypt';
 import _ from 'underscore';
 import User from '../../models/user';
 import { getToken } from '../auth/authentication';
@@ -6,7 +7,7 @@ import { redisClient } from '../../app';
 
 const router = express.Router();
 
-router.post('/authenticate', function(req, res) {
+router.post('/authenticate', (req, res) => {
   // find the user
   User.findOne({
     email: req.body.email
@@ -25,8 +26,14 @@ router.post('/authenticate', function(req, res) {
         message: 'User not found'
       });
     }
-    // TODO: plaintext???? wtf is this 1992
-    if (user.password != req.body.password) {
+
+    const raw = req.body.password;
+
+    const hash = user.password;
+
+    const verified = await bcrypt.compare(raw, hash);
+
+    if (!verified) {
       return res.status(403).json({
         success: false,
         message: 'Incorrect password'
@@ -98,13 +105,15 @@ router.post('/register', async (req, res) => {
   }
 
   // TODO: plaintext???? wtf is this 1992
+  const raw = req.body.password;
+  const hashed = await bcrypt.hash(raw, 10);
 
   var user = new User({
     first_name: req.body.first_name,
     last_name: req.body.last_name,
     email: req.body.email,
-    password: req.body.password,
-    admin: (req.body.email.toLowerCase() === 'cbutler2018@gmail.com')
+    password: hashed,
+    admin: (req.body.email.toLowerCase() === 'me@cameronb.me')
   });
 
   // save the sample user
