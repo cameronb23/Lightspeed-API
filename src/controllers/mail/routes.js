@@ -16,7 +16,8 @@ const router = express.Router();
 router.post('/sendUpdate', (req, res) => {
   try {
     const headers = req.headers;
-    if(!headers['X-API-Key'] || headers['X-API-Key'] !== AUTH_KEY) {
+    console.log(req.headers['x-api-key'])
+    if(!headers['x-api-key'] || headers['x-api-key'] !== AUTH_KEY) {
       return res.status(401).send('Unauthorized');
     }
 
