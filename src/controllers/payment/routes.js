@@ -69,13 +69,10 @@ router.post('/create', async (req, res) => {
       }
 
       user.licenses.push({
-        productName: product.title,
+        productName: product.key,
         productId: product._id,
         licenseKey: key
       });
-
-      console.log(key);
-      console.log(user);
 
       await user.save();
 

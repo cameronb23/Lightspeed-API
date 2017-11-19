@@ -17,9 +17,9 @@ const router = express.Router();
 
 router.post('/validate', async (req, res) => {
   try {
-    const { productName, licenseKey } = req.body;
+    const { productId, licenseKey } = req.body;
 
-    if(productName == null || licenseKey == null) {
+    if(productId == null || licenseKey == null) {
       return res.status(403).send({
         success: false,
         message: 'Failed to authenticate'
@@ -66,9 +66,9 @@ router.post('/validate', async (req, res) => {
 
 router.post('/activate', async (req, res) => {
   try {
-    const { email, password, productName, licenseKey } = req.body;
+    const { email, password, productId, licenseKey } = req.body;
 
-    if(email == null || password == null || productName == null || licenseKey == null) {
+    if(email == null || password == null || productId == null || licenseKey == null) {
       res.status(403).send({
         success: false,
         message: 'Failed to authenticate'
@@ -93,7 +93,7 @@ router.post('/activate', async (req, res) => {
       });
     }
 
-    const prodSet = user.licenses.filter(l => l.productName === productName);
+    const prodSet = user.licenses.filter(l => l._id === productId);
 
     if(prodSet.length === 0) {
       return res.status(404).send({
