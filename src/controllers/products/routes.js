@@ -7,13 +7,6 @@ const router = express.Router();
 router.use(authenticate);
 
 router.get('/', async (req, res) => {
-  if(!req.decoded.admin) {
-    return res.status(400).send({
-      success: false,
-      message: 'Insufficient permissions',
-    });
-  }
-
   try {
     const products = await Product.find().limit(25).exec();
 
@@ -27,13 +20,6 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:productId', async (req, res) => {
-  if(!req.decoded.admin) {
-    return res.status(400).send({
-      success: false,
-      message: 'Insufficient permissions',
-    });
-  }
-
   if (!req.params.productId) {
     return res.status(400).send({
       success: false,
