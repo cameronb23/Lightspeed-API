@@ -93,7 +93,7 @@ router.post('/activate', async (req, res) => {
       });
     }
 
-    const prodSet = user.licenses.filter(l => l._id === productId);
+    const prodSet = user.licenses.filter(l => l.productId === productId);
 
     if(prodSet.length === 0) {
       return res.status(404).send({
