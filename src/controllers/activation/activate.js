@@ -51,6 +51,8 @@ async function hasMachinesLeft(licenseId) {
   try {
     const res = await request(opts);
 
+    console.log(res);
+
     if(res.data.length >= 5) {
       return false;
     }
