@@ -51,7 +51,7 @@ async function hasMachinesLeft(licenseId) {
   try {
     const res = await request(opts);
 
-    console.log(res);
+    console.log(`Has ${5 - res.data.length} machine activations left.`);
 
     if(res.data.length >= 5) {
       return false;
