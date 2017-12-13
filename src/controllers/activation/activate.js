@@ -143,13 +143,16 @@ router.post('/validate', async (req, res) => {
       });
     }
 
-    if (meta.constant === 'VALID') {
+    console.log(meta.constant);
 
+    if (meta.constant === 'VALID') {
+      console.log('License key valid, validating machine.');
       // TODO: validate machine
       const validated = await validateMachine(machine.fingerprint);
 
       if(!validated) {
         // TODO: attempt to create new key
+        console.log('Machine not found, creating new machine.');
         if(!hasMachinesLeft(license.licenseId)) {
           return res.status(400).send({
             success: false,
