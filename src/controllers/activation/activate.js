@@ -98,6 +98,7 @@ async function createMachine(machine, license) {
 }
 
 router.post('/validate', async (req, res) => {
+  console.log(req.body);
   try {
     const { email, productId, licenseKey, machine } = req.body;
 
@@ -107,8 +108,6 @@ router.post('/validate', async (req, res) => {
         message: 'Failed to authenticate'
       });
     }
-
-    console.log(JSON.stringify(req.body));
 
     const user = await User.findOne({email: email}).exec();
 
