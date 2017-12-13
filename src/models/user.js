@@ -15,7 +15,8 @@ const model = mongoose.model('User', new Schema({
     {
       productName: String,
       productId: String,
-      licenseKey: String
+      licenseKey: String,
+      licenseId: String
     }
   ]
 }));

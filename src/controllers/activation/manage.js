@@ -2,7 +2,7 @@ import request from 'request-promise';
 import User from '../../models/user';
 import { authenticate } from '../auth/authentication';
 
-const KEYGEN_ACCOUNT_ID = '23924206-776c-4b65-8809-d582882f8e9e';
+const { KEYGEN_ACCOUNT_ID } = process.env;
 
 const KEYGEN_VALIDATION_TOKEN = process.env.VALIDATION_TOKEN;
 
@@ -10,8 +10,6 @@ const KEYGEN_REQUEST_BASEURL = `https://api.keygen.sh/v1/accounts/${KEYGEN_ACCOU
 const KEYGEN_REQUEST_HEADERS = {
   Accept: 'application/vnd.api+json'
 };
-
-const POLICY_ID = '22e45b06-4d49-4b12-8f50-b37102232671';
 
 function generateKeyString(len, bits) {
   bits = bits || 36;
@@ -26,7 +24,7 @@ function generateKeyString(len, bits) {
   return outStr;
 }
 
-export async function createKey() {
+export async function createKey(policy) {
   console.log('Creating new credentials.');
   const key = generateKeyString(24);
 
@@ -75,7 +73,7 @@ export async function createKey() {
           policy: {
             data: {
               type: 'policies',
-              id: POLICY_ID
+              id: policy
             }
           }
         }
@@ -87,10 +85,13 @@ export async function createKey() {
   try {
     const r = await request(opts);
 
-    const res = await createLicense(key);
+    const licenseId = await createLicense(key);
 
-    if(res) {
-      return key;
+    if(licenseId) {
+      return {
+        key,
+        licenseId
+      };
     }
 
     return null;
@@ -100,7 +101,7 @@ export async function createKey() {
   }
 }
 
-async function createLicense(key) {
+async function createLicense(key, policy) {
   const opts = {
     url: `${KEYGEN_REQUEST_BASEURL}/licenses`,
     method: 'POST',
@@ -117,7 +118,7 @@ async function createLicense(key) {
           policy: {
             data: {
               type: 'policies',
-              id: POLICY_ID
+              id: policy
             }
           }
         }
@@ -129,9 +130,13 @@ async function createLicense(key) {
   try {
     const res = await request(opts);
 
-    return true;
+    if(res.data.id) {
+      return res.data.id;
+    }
+
+    return null;
   } catch (e) {
     console.log(e);
-    return false;
+    return null;
   }
 }

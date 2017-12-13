@@ -30,6 +30,10 @@ const model = mongoose.model('Product', new Schema({
   licensable: {
     type: Boolean,
     default: false
+  },
+  policyId: {
+    type: String,
+    required: false
   }
 }));
 

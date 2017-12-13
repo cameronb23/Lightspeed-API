@@ -4,9 +4,9 @@ import request from 'request-promise';
 import { verifyPassword } from '../auth/authentication';
 import User from '../../models/user';
 
-const KEYGEN_ACCOUNT_ID = '23924206-776c-4b65-8809-d582882f8e9e';
+const { KEYGEN_ACCOUNT_ID } = process.env;
 
-const KEYGEN_VALIDATION_TOKEN = process.env.VALIDATION_TOKEN || '23924206776c4b658809d582882f8e9e.ec0dc93a288e4bf6bb66fd5a501f8bb5.0a1771b7f6e29eb27fe78dcff4748e8461781a9bec9b3dbced69e3bfb3caa29d7074e31af7304d4ee366a5136c8c3a8faecd6cf409203f48965337797e97ddv1';
+const KEYGEN_VALIDATION_TOKEN = process.env.VALIDATION_TOKEN;
 
 const KEYGEN_REQUEST_BASEURL = `https://api.keygen.sh/v1/accounts/${KEYGEN_ACCOUNT_ID}`;
 const KEYGEN_REQUEST_HEADERS = {
@@ -15,16 +15,109 @@ const KEYGEN_REQUEST_HEADERS = {
 
 const router = express.Router();
 
+async function validateMachine(fingerprint) {
+  const opts = {
+    url: `${KEYGEN_REQUEST_BASEURL}/machines?fingerprint=${fingerprint}`,
+    method: 'GET',
+    headers: Object.assign({}, KEYGEN_REQUEST_HEADERS, {
+      Authorization: `Bearer ${KEYGEN_VALIDATION_TOKEN}`
+    }),
+    json: true
+  }
+
+  try {
+    const res = await request(opts);
+
+    if(res.data.length > 0) {
+      return true;
+    }
+
+    return false;
+  } catch(e) {
+    return false;
+  }
+}
+
+async function hasMachinesLeft(licenseId) {
+  const opts = {
+    url: `${KEYGEN_REQUEST_BASEURL}/machines?license=${licenseId}`,
+    method: 'GET',
+    headers: Object.assign({}, KEYGEN_REQUEST_HEADERS, {
+      Authorization: `Bearer ${KEYGEN_VALIDATION_TOKEN}`
+    }),
+    json: true
+  }
+
+  try {
+    const res = await request(opts);
+
+    if(res.data.length >= 5) {
+      return false;
+    }
+
+    return true;
+  } catch(e) {
+    return false;
+  }
+}
+
+async function createMachine(machine, license) {
+  const opts = {
+    url: `${KEYGEN_REQUEST_BASEURL}/machines`,
+    method: 'POST',
+    headers: Object.assign({}, KEYGEN_REQUEST_HEADERS, {
+      Authorization: `Bearer ${KEYGEN_VALIDATION_TOKEN}`
+    }),
+    body: {
+      data: {
+        type: 'machines',
+        attributes: {
+          fingerprint: machine.fingerprint,
+          platform: machine.platform,
+          name: machine.displayName
+        },
+        relationships: {
+          license: {
+            data: {
+              type: 'licenses',
+              id: license.licenseId
+            }
+          }
+        }
+      }
+    },
+    json: true
+  }
+
+  const { data, errors } = await request(opts);
+
+  if(data.id !== null) {
+    return true;
+  }
+  return false;
+}
+
 router.post('/validate', async (req, res) => {
   try {
-    const { productId, licenseKey } = req.body;
+    const { email, productId, licenseKey, machine } = req.body;
 
-    if(productId == null || licenseKey == null) {
+    if(email == null || productId == null || licenseKey == null || machine == null) {
       return res.status(403).send({
         success: false,
         message: 'Failed to authenticate'
       });
     }
+
+    const user = await User.findOne({email: email}).exec();
+
+    if (user == null || user.licenses.filter(l => l.productId === productId).length < 1) {
+      return res.status(403).send({
+        success: false,
+        message: 'Failed to authenticate'
+      });
+    }
+
+    const license = user.licenses.filter(l => l.productId === productId)[0];
 
     const validationOpts = {
       url: `${KEYGEN_REQUEST_BASEURL}/licenses/actions/validate-key`,
@@ -32,7 +125,10 @@ router.post('/validate', async (req, res) => {
       json: true,
       body: {
         meta: {
-          key: licenseKey
+          key: licenseKey,
+          scope: {
+            fingerprint: machine.fingerprint
+          }
         }
       }
     };
@@ -47,6 +143,29 @@ router.post('/validate', async (req, res) => {
     }
 
     if (meta.constant === 'VALID') {
+
+      // TODO: validate machine
+      const validated = await validateMachine(machine.fingerprint);
+
+      if(!validated) {
+        // TODO: attempt to create new key
+        if(!hasMachinesLeft(license.licenseId)) {
+          return res.status(400).send({
+            success: false,
+            message: 'Max machines reached.'
+          });
+        }
+
+        const created = await createMachine(machine, license);
+
+        if(!created) {
+          return res.status(401).send({
+            success: false,
+            message: 'Failed to associate machine'
+          });
+        }
+      }
+
       return res.status(200).send({
         success: true
       });

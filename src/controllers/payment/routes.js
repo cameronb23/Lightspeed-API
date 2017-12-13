@@ -59,7 +59,7 @@ router.post('/create', async (req, res) => {
       // TODO: log charge to database
       const user = await User.findOne({_id: req.decoded.userId}).exec();
 
-      const key = await createKey();
+      const key = await createKey(product.policyId);
 
       if(key == null) {
         return res.status(200).send({
@@ -71,7 +71,8 @@ router.post('/create', async (req, res) => {
       user.licenses.push({
         productName: product.key,
         productId: product._id,
-        licenseKey: key
+        licenseKey: key.key,
+        licenseId: key.licenseId
       });
 
       await user.save();
