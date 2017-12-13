@@ -54,6 +54,7 @@ async function hasMachinesLeft(licenseId) {
     console.log(`Has ${5 - res.data.length} machine activations left.`);
 
     if(res.data.length >= 5) {
+      console.log('Reached max');
       return false;
     }
 
