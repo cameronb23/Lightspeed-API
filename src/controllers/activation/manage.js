@@ -25,7 +25,7 @@ function generateKeyString(len, bits) {
 }
 
 export async function createKey(policy) {
-  console.log('Creating new credentials.');
+  console.log('Creating new credentials for policy ' + policy);
   const key = generateKeyString(24);
 
   const validationOpts = {
@@ -85,7 +85,7 @@ export async function createKey(policy) {
   try {
     const r = await request(opts);
 
-    const licenseId = await createLicense(key);
+    const licenseId = await createLicense(key, policy);
 
     if(licenseId) {
       return {
