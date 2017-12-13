@@ -108,6 +108,8 @@ router.post('/validate', async (req, res) => {
       });
     }
 
+    console.log(JSON.stringify(req.body));
+
     const user = await User.findOne({email: email}).exec();
 
     if (user == null || user.licenses.filter(l => l.productId === productId).length < 1) {
