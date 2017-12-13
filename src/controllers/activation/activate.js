@@ -51,10 +51,7 @@ async function hasMachinesLeft(licenseId) {
   try {
     const res = await request(opts);
 
-    console.log(`Has ${5 - res.data.length} machine activations left.`);
-
     if(res.data.length >= 5) {
-      console.log('Reached max');
       return false;
     }
 
@@ -143,17 +140,17 @@ router.post('/validate', async (req, res) => {
       });
     }
 
-    console.log(meta.constant);
 
     if (meta.constant === 'VALID') {
-      console.log('License key valid, validating machine.');
       // TODO: validate machine
       const validated = await validateMachine(machine.fingerprint);
 
       if(!validated) {
         // TODO: attempt to create new key
-        console.log('Machine not found, creating new machine.');
-        if(!hasMachinesLeft(license.licenseId)) {
+
+        const hasAnyLeft = await hasMachinesLeft(license.licenseId);
+
+        if(!hasAnyLeft) {
           return res.status(400).send({
             success: false,
             message: 'Max machines reached.'
