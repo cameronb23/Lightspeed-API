@@ -126,10 +126,7 @@ router.post('/validate', async (req, res) => {
       json: true,
       body: {
         meta: {
-          key: licenseKey,
-          scope: {
-            fingerprint: machine.fingerprint
-          }
+          key: licenseKey
         }
       }
     };
