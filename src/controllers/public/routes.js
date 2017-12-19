@@ -55,6 +55,9 @@ router.post('/authenticate', (req, res) => {
       message: 'Authentication successful',
       credentials: {
         admin: user.admin,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        email: user.email,
         token
       }
     });
