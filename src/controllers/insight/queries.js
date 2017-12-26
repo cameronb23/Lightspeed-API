@@ -68,12 +68,25 @@ export async function fetchStockX(urlPath) {
   try {
     const res = await request(opts);
 
-    const result = res.Product;
+    let result = res.Product;
 
     if (!result) {
       return {
         success: false,
         message: 'Product not found.'
+      };
+    }
+
+    const id = result.id;
+
+    opts.url = `https://stockx.com/api/products/${id}/activity?state=480`;
+
+    const activityRes = await request(opts);
+
+    if (activityRes) {
+      result = {
+        product: result,
+        activity: activityRes,
       };
     }
 
