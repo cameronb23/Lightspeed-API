@@ -24,7 +24,12 @@ export async function fetchData(sku) {
   let goat = null;
 
   try {
-    stockx = await queryStockX(sku);
+    const res = await queryStockX(sku);
+    const hit = res.products[0];
+
+    const url = hit.url;
+
+    stockx = await fetchStockX(url);
   } catch(e) {
     console.log('Error querying stockx', e);
   }
@@ -45,10 +50,43 @@ export async function fetchData(sku) {
   return {
     success: true,
     data: {
-      stockx: stockx.products[0],
+      stockx: stockx.product,
       goat: goat.products[0],
     },
   };
+}
+
+export async function fetchStockX(urlPath) {
+  const url = `https://stockx.com/api/products/${urlPath}?includes=market,360`;
+
+  const opts = {
+    url,
+    method: 'GET',
+    json: true
+  };
+
+  try {
+    const res = await request(opts);
+
+    const result = res.Product;
+
+    if (!result) {
+      return {
+        success: false,
+        message: 'Product not found.'
+      };
+    }
+
+    return {
+      success: true,
+      product: result,
+    }
+  } catch (e) {
+    return {
+      success: false,
+      message: 'Unable to contact the API for product data'
+    };
+  }
 }
 
 export async function queryGoat(query) {
