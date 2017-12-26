@@ -19,6 +19,38 @@ export async function query(query) {
   };
 }
 
+export async function fetchData(sku) {
+  let stockx = null;
+  let goat = null;
+
+  try {
+    stockx = await queryStockX(sku);
+  } catch(e) {
+    console.log('Error querying stockx', e);
+  }
+
+  try {
+    goat = await queryGoat(sku);
+  } catch(e) {
+    console.log('Error querying goat', e);
+  }
+
+  if(!stockx && !goat) {
+    return {
+      success: false,
+      message: 'Unable to fetch live data',
+    };
+  }
+
+  return {
+    success: true,
+    data: {
+      stockx: stockx.products[0],
+      goat: goat.products[0],
+    },
+  };
+}
+
 export async function queryGoat(query) {
   const url = 'https://2fwotdvm2o-dsn.algolia.net/1/indexes/ProductTemplateSearch/query';
 
