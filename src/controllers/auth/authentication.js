@@ -3,6 +3,8 @@ const jwebtoken = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const jwt = promisify(jwebtoken);
 
+const { JWT_SECRET } = process.env;
+
 export async function verifyPassword(password, user) {
   const hash = user.password;
 
@@ -20,14 +22,14 @@ export async function verifyPassword(password, user) {
 }
 
 export async function getToken(user) {
-  return jwt.sign({ userId: user._id, admin: user.admin }, 'abc', {
+  return jwt.sign({ userId: user._id, admin: user.admin }, JWT_SECRET, {
     expiresIn: "7d"
   });
 }
 
 export async function verifyToken(token) {
   try {
-    return jwt.verify(token, 'abc');
+    return jwt.verify(token, JWT_SECRET);
   } catch (e) {
     throw e;
   }

@@ -13,6 +13,9 @@
     "test": "jest --watch",
     "lint": "esw -w src test"
   },
+  "engines": {
+    "node": ">=8.9.0"
+  },
   "dependencies": {
     "babel-cli": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
@@ -21,6 +24,8 @@
     "body-parser": "^1.17.1",
     "cors": "^2.8.4",
     "express": "^4.15.2",
+    "express-validation": "^1.0.2",
+    "joi": "^13.0.2",
     "jsonwebtoken": "^8.1.0",
     "mailgun-js": "^0.13.1",
     "mongoose": "^4.12.4",
